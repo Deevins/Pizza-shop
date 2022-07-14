@@ -1,13 +1,19 @@
 import { categories } from "../../assets/categories"
+import React from "react"
 
-const Categories = ({ categoryId, onClickCategory }) => {
+type Props = {
+    categoryId: number
+    onClickCategory: (i: number) => void
+}
+
+const Categories: React.FC<Props> = ({ categoryId, onClickCategory }) => {
     return (
         <div className="categories">
             <ul>
                 {categories.map((el, i) => (
                     <li
                         onClick={() => onClickCategory(i)}
-                        className={categoryId === i ? "active" : null}
+                        className={categoryId === i ? "active" : ""}
                         key={i}
                     >
                         {el}

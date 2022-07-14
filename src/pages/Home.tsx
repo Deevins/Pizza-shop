@@ -1,42 +1,52 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import React, { useEffect, useRef } from "react"
+import { useSelector } from "react-redux"
 import qs from "qs"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
-import Categories from "../components/Home/Categories"
-import Sort, { sortTypes } from "../components/Home/Sort"
+import { categories } from "../assets/categories"
+import { sortTypes } from "../assets/constants"
+
+import Sort from "../components/Home/Sort"
 import PizzaBlock from "../components/Home/PizzaBlock"
 import Loader from "../components/Home/Loader"
 import Pagination from "../components/Home/Pagination/Pagination"
+import Categories from "../components/Home/Categories"
 
-import { categories } from "../assets/categories"
-import { PENDING } from "../assets/fetchStatus"
+import { FetchStatusEnum } from "../@types/enums/FetchStatusEnum"
 
 import {
     selectFilters,
     setCategoryId,
     setFilters
 } from "../redux/slices/filterSlice"
-
 import {
     selectPagination,
     setCurrentPage
 } from "../redux/slices/paginationSlice"
-
 import { fetchPizzas, selectPizzas } from "../redux/slices/pizzaSlice"
+import { useAppDispatch } from "../redux/store"
 
-const Home = () => {
+type SearchPizzaParams = {
+    sortBy: string
+    order: string
+    categoryId: string
+    search: string
+    currentPage: number
+}
+
+const Home: React.FC = () => {
     const navigate = useNavigate()
+
     const { categoryId, sortType, searchValue } = useSelector(selectFilters)
     const { currentPage } = useSelector(selectPagination)
     const { items, status } = useSelector(selectPizzas)
+
     const isSearch = useRef(false)
     const isMounted = useRef(false)
 
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
-    const onClickCategory = (id) => dispatch(setCategoryId(id))
+    const onClickCategory = (id: number) => dispatch(setCategoryId(id))
 
     const getPizzas = async () => {
         const sortBy = sortType.sortProperty.replace("-", "")
@@ -58,14 +68,14 @@ const Home = () => {
             })
         )
     }
-
+    // TODO: fix useEffect
     // Если изменили параметры и был первый рендер
     useEffect(() => {
         if (isMounted.current) {
             const queryString = qs.stringify({
                 sortProperty: sortType.sortProperty,
-                categoryId,
-                currentPage
+                categoryId: Number(categoryId),
+                currentPage: Number(currentPage)
             })
             navigate(`?${queryString}`)
         }
@@ -73,34 +83,39 @@ const Home = () => {
     }, [categoryId, sortType, currentPage])
 
     // Парсим параметры при первом рендере
-    useEffect(() => {
-        if (window.location.search) {
-            const params = qs.parse(window.location.search.substring(1))
-
-            const sort = sortTypes.find(
-                (obj) => obj.sortProperty === params.sortProperty
-            )
-            dispatch(
-                setFilters({
-                    sortType: sort,
-                    categoryId: params.categoryId
-                })
-            )
-            dispatch(setCurrentPage(params.currentPage))
-            isSearch.current = true
-        }
-    }, [])
-
+    // useEffect(() => {
+    //     if (window.location.search) {
+    //         console.log(window.location.search)
+    //         const params = qs.parse(
+    //             window.location.search.substring(1)
+    //         ) as unknown as SearchPizzaParams
+    //         console.log(params)
+    //         const sort = sortTypes.find(
+    //             (obj) => obj.sortProperty === params.sortBy
+    //         )
     //
+    //         dispatch(
+    //             setFilters({
+    //                 searchValue: params.search,
+    //                 categoryId: Number(params.categoryId),
+    //                 // @ts-ignore
+    //                 sortType: sort.sortProperty
+    //             })
+    //         )
+    //         dispatch(setCurrentPage(Number(params.currentPage)))
+    //         isSearch.current = true
+    //     }
+    // }, [sortType])
+
     useEffect(() => {
         window.scrollTo(0, 0)
         if (!isSearch.current) {
             getPizzas()
         }
         isSearch.current = false
-    }, [categoryId, sortType, currentPage])
+    }, [categoryId, sortType, currentPage, searchValue])
 
-    const pizzas = items.map((pizza) => (
+    const pizzas = items.map((pizza: any) => (
         <PizzaBlock {...pizza} key={pizza.id} />
     ))
     const loaders = [...Array(8)].map((item, i) => <Loader key={i} />)
@@ -116,7 +131,7 @@ const Home = () => {
             </div>
             <h2 className="content__title">{categories[categoryId]} пиццы</h2>
             <div className="content__items">
-                {status === PENDING ? loaders : pizzas}
+                {status === FetchStatusEnum.PENDING ? loaders : pizzas}
             </div>
             <Pagination />
         </>

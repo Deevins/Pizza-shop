@@ -1,11 +1,14 @@
-import logoSvg from "../../assets/img/pizza-logo.svg"
-import { ReactComponent as CartSvg } from "../../assets/img/cart.svg"
-import { Link } from "react-router-dom"
-import Search from "../Home/Search/Search"
+import React from "react"
 import { useSelector } from "react-redux"
+import { Link } from "react-router-dom"
+
+import logoSvg from "../../assets/img/pizza-logo.svg"
+// @ts-ignore
+import { CartImg } from "../../assets/images"
+import Search from "../Home/Search/Search"
 import { selectCart } from "../../redux/slices/cartSlice"
 
-const Header = () => {
+const Header: React.FC = () => {
     const { totalPrice, totalItems } = useSelector(selectCart)
 
     return (
@@ -24,7 +27,7 @@ const Header = () => {
                         <span>{totalPrice} ₽</span>
                         <div className="button__delimiter" />
                         <div>
-                            <CartSvg />
+                            <CartImg />
                             <span>{totalItems}</span>
                         </div>
                     </Link>

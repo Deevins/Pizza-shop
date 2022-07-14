@@ -3,13 +3,13 @@ import ReactPaginate from "react-paginate"
 
 import styles from "./Pagination.module.scss"
 import { useDispatch } from "react-redux"
-
 import { setCurrentPage } from "../../../redux/slices/paginationSlice"
 
 const Pagination = () => {
     const dispatch = useDispatch()
 
-    const updateCurrentPage = (e) => dispatch(setCurrentPage(e.selected + 1))
+    const updateCurrentPage = (e: any) =>
+        dispatch(setCurrentPage(e.selected + 1))
 
     return (
         <div>
@@ -18,9 +18,8 @@ const Pagination = () => {
                 nextLabel=">"
                 onPageChange={updateCurrentPage}
                 pageRangeDisplayed={2}
-                pageCount={3}
+                pageCount={4}
                 previousLabel="<"
-                renderOnZeroPageCount={null}
                 className={styles.root}
             />
         </div>

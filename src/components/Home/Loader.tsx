@@ -1,6 +1,6 @@
 import ContentLoader from "react-content-loader"
 
-const Loader = (props) => {
+const Loader = () => {
     return (
         <ContentLoader
             speed={2}
@@ -9,7 +9,6 @@ const Loader = (props) => {
             viewBox="0 0 280 500"
             backgroundColor="#fbf3f3"
             foregroundColor="#cecaca"
-            {...props}
         >
             <rect x="329" y="259" rx="5" ry="5" width="131" height="18" />
             <rect x="284" y="197" rx="8" ry="8" width="141" height="58" />

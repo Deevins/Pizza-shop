@@ -1,12 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { IPizza } from "../../@types/IPizza"
+import { RootState } from "../store"
 
-const initialState = {
+interface ICartSliceState {
+    items: IPizza[]
+    totalPrice: number
+    totalItems: number
+}
+
+const initialState: ICartSliceState = {
     items: [],
     totalPrice: 0,
     totalItems: 0
 }
 
-const findSelectedItem = (state, action) =>
+const findSelectedItem = (
+    state: ICartSliceState,
+    action: { payload: any; type?: string }
+) =>
     state.items.find(
         (obj) =>
             obj.id === action.payload.id &&
@@ -18,7 +29,7 @@ export const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        addProduct(state, action) {
+        addProduct(state, action: PayloadAction<IPizza>) {
             const findItem = findSelectedItem(state, action)
 
             if (findItem) {
@@ -34,7 +45,7 @@ export const cartSlice = createSlice({
                 return obj.price * obj.count + sum
             }, 0)
         },
-        removeProduct(state, action) {
+        removeProduct(state, action: PayloadAction<IPizza>) {
             // TODO: fix problem with delete cart items. find a way to delete item with id and its own 'type' and 'size'
             state.items = state.items.filter(
                 (item) => item.id !== action.payload.id
@@ -48,28 +59,32 @@ export const cartSlice = createSlice({
             state.totalPrice = 0
             state.totalItems = 0
         },
-        itemDecrement(state, action) {
+        itemDecrement(state, action: PayloadAction<IPizza>) {
             const selectedItem = findSelectedItem(state, action)
-            if (selectedItem.count === 1) {
+            if (selectedItem && selectedItem.count === 1) {
                 state.items = state.items.filter(
                     (item) => item.id !== action.payload.id
                 )
                 state.totalItems = state.totalItems - 1
                 state.totalPrice = state.totalPrice - action.payload.price
             } else {
-                selectedItem.count--
-                state.totalItems--
-                state.totalPrice = state.totalPrice - action.payload.price
+                if (selectedItem) {
+                    selectedItem.count--
+                    state.totalItems--
+                    state.totalPrice = state.totalPrice - action.payload.price
+                }
             }
         }
     }
 })
 
-export const selectCart = (state) => state.cart
-export const selectItemFromCartByProps = (id, type, size) => (state) =>
-    state.cart.items.find(
-        (obj) => obj.id === id && obj.type === type && obj.size === size
-    )
+export const selectCart = (state: RootState) => state.cart
+export const selectItemFromCartByProps =
+    (id: string, type: number, size: number) => (state: RootState) =>
+        state.cart.items.find(
+            (obj: IPizza) =>
+                obj.id === id && obj.type === type && obj.size === size
+        )
 
 // Action creators are generated for each case reducer function
 export const { addProduct, removeProduct, clearCart, itemDecrement } =

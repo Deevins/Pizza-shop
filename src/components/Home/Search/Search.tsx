@@ -1,33 +1,34 @@
-import React, { useCallback, useRef, useState } from "react"
+import { ChangeEventHandler, useCallback, useRef, useState } from "react"
 import debounce from "lodash.debounce"
+import { useDispatch, useSelector } from "react-redux"
 
 import styles from "./Search.module.scss"
-import { ReactComponent as SearchImage } from "../../../assets/img/search.svg"
-import { ReactComponent as CloseImage } from "../../../assets/img/close.svg"
+
+// @ts-ignore
+import { CloseImage, SearchImage } from "../../../assets/images"
 import { selectFilters, setSearch } from "../../../redux/slices/filterSlice"
-import { useDispatch, useSelector } from "react-redux"
 
 const Search = () => {
     const [value, setValue] = useState("")
     const dispatch = useDispatch()
-    const searchRef = useRef(null)
+    const searchRef = useRef<HTMLInputElement>(null)
     const { searchValue } = useSelector(selectFilters)
 
     const onClickClear = () => {
         setValue("")
         dispatch(setSearch(""))
-        searchRef.current.focus()
+        searchRef.current?.focus()
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const updateSearchValue = useCallback(
-        debounce((string) => {
-            dispatch(setSearch(string))
-        }, 600),
+        debounce((str: string) => {
+            dispatch(setSearch(str))
+        }, 300),
         []
     )
 
-    const onInputChange = (event) => {
+    const onInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
         setValue(event.target.value)
         updateSearchValue(event.target.value)
     }

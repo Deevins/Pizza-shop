@@ -1,13 +1,16 @@
+import React from "react"
+import { useDispatch } from "react-redux"
+
 import {
     addProduct,
     itemDecrement,
     removeProduct
 } from "../../redux/slices/cartSlice"
-import { useDispatch } from "react-redux"
 import { SIZE_TYPES, TYPE_NAMES } from "../../assets/constants"
+import { IPizza } from "../../@types/IPizza"
 
-const PizzaItem = ({ pizza }) => {
-    const { imageUrl, title, price, count, type, size } = pizza
+const PizzaItem: React.FC<IPizza> = (pizza) => {
+    const { imageUrl, title, price, count = 1, type, size } = pizza
     const dispatch = useDispatch()
 
     const onClickAdd = () => {
