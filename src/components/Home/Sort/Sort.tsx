@@ -1,26 +1,29 @@
-import React, { useEffect, useRef, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import React from "react"
+import { useDispatch } from "react-redux"
 
-import { selectSortFilter, setSort } from "../../redux/slices/filterSlice"
-import { sortTypes } from "../../assets/constants"
-import { SortTypeItem } from "../../@types/SortTypeItem"
+import { setSort } from "redux/filter/slice"
+import { sortTypes } from "assets/constants"
+import { SortTypeItem } from "../../../@types/SortTypeItem"
 
 type PopupClickType = {
     path: Node[]
 }
 
-const Sort: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false)
+type Props = {
+    sortType: SortTypeItem
+}
+
+const Sort: React.FC<Props> = React.memo(({ sortType }) => {
+    const [isOpen, setIsOpen] = React.useState(false)
     const dispatch = useDispatch()
-    const sortType = useSelector(selectSortFilter)
-    const sortRef = useRef<HTMLDivElement>(null)
+    const sortRef = React.useRef<HTMLDivElement>(null)
 
     const onSortClick = (obj: SortTypeItem) => {
         setIsOpen(false)
         dispatch(setSort(obj))
     }
 
-    useEffect(() => {
+    React.useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const _event = event as MouseEvent & PopupClickType
             if (sortRef.current && !_event.path.includes(sortRef.current)) {
@@ -74,6 +77,6 @@ const Sort: React.FC = () => {
             )}
         </div>
     )
-}
+})
 
 export default Sort

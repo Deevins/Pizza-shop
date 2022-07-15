@@ -1,14 +1,12 @@
-import React, { useState } from "react"
+import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 
-import {
-    addProduct,
-    selectItemFromCartByProps
-} from "../../redux/slices/cartSlice"
-import { TYPE_NAMES } from "../../assets/constants"
+import { addProduct } from "redux/cart/slice"
+import { TYPE_NAMES } from "assets/constants"
 // @ts-ignore
-import { PlusImage } from "../../assets/images"
+import { PlusImage } from "assets/images"
 import { Link } from "react-router-dom"
+import { selectItemFromCartByProps } from "../../../redux/cart/selectors"
 
 type Props = {
     title: string
@@ -22,8 +20,8 @@ type Props = {
 
 const PizzaBlock: React.FC<Props> = (pizza) => {
     const { title, id, price, imageUrl, sizes, types } = pizza
-    const [activeSize, setSize] = useState<number>(0)
-    const [activeType, setActiveType] = useState<number>(0)
+    const [activeSize, setSize] = React.useState<number>(0)
+    const [activeType, setActiveType] = React.useState<number>(0)
 
     const dispatch = useDispatch()
     const currentItem = useSelector(

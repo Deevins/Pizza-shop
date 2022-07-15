@@ -1,16 +1,14 @@
 import React from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
-import {
-    addProduct,
-    itemDecrement,
-    removeProduct
-} from "../../redux/slices/cartSlice"
-import { SIZE_TYPES, TYPE_NAMES } from "../../assets/constants"
-import { IPizza } from "../../@types/IPizza"
+import { addProduct, itemDecrement, removeProduct } from "redux/cart/slice"
+import { SIZE_TYPES, TYPE_NAMES } from "assets/constants"
+import { IPizza } from "../../../@types/IPizza"
+import { selectCart } from "../../../redux/cart/selectors"
 
 const PizzaItem: React.FC<IPizza> = (pizza) => {
     const { imageUrl, title, price, count = 1, type, size } = pizza
+    const { totalItems } = useSelector(selectCart)
     const dispatch = useDispatch()
 
     const onClickAdd = () => {
@@ -37,7 +35,8 @@ const PizzaItem: React.FC<IPizza> = (pizza) => {
                     </p>
                 </div>
                 <div className="cart__item-count">
-                    <div
+                    <button
+                        disabled={count === 1}
                         onClick={onClickMinus}
                         className="button button--outline button--circle cart__item-count-minus"
                     >
@@ -57,7 +56,7 @@ const PizzaItem: React.FC<IPizza> = (pizza) => {
                                 fill="#EB5A1E"
                             />
                         </svg>
-                    </div>
+                    </button>
                     <b>{count}</b>
                     <div
                         onClick={onClickAdd}
@@ -86,7 +85,10 @@ const PizzaItem: React.FC<IPizza> = (pizza) => {
                 </div>
                 <div
                     className="cart__item-remove"
-                    onClick={() => dispatch(removeProduct(pizza))}
+                    onClick={() => {
+                        dispatch(removeProduct(pizza))
+                        console.log(pizza + " in component")
+                    }}
                 >
                     <div className="button button--outline button--circle">
                         <svg

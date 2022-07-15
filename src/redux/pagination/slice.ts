@@ -1,18 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-import { RootState } from "../store"
-
-interface IPaginationSliceState {
-    currentPage: number
-    pageCount: number
-}
+import { IPaginationSliceState } from "./types"
 
 const initialState: IPaginationSliceState = {
     currentPage: 1,
     pageCount: 1
 }
 
-export const paginationSlice = createSlice({
+export const slice = createSlice({
     name: "pagination",
     initialState,
     reducers: {
@@ -25,9 +20,7 @@ export const paginationSlice = createSlice({
     }
 })
 
-export const selectPagination = (state: RootState) => state.pagination
-
 // Action creators are generated for each case reducer function
-export const { setCurrentPage, setPageCount } = paginationSlice.actions
+export const { setCurrentPage, setPageCount } = slice.actions
 
-export default paginationSlice.reducer
+export default slice.reducer

@@ -1,18 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { IPizza } from "../../@types/IPizza"
-import { RootState } from "../store"
-
-interface ICartSliceState {
-    items: IPizza[]
-    totalPrice: number
-    totalItems: number
-}
-
-const initialState: ICartSliceState = {
-    items: [],
-    totalPrice: 0,
-    totalItems: 0
-}
+import { getCartFromLS } from "utils/getCartFromLS"
+import { ICartSliceState } from "./types"
 
 const findSelectedItem = (
     state: ICartSliceState,
@@ -25,7 +14,13 @@ const findSelectedItem = (
             obj.size === action.payload.size
     )
 
-export const cartSlice = createSlice({
+const initialState: ICartSliceState = {
+    items: getCartFromLS().items,
+    totalPrice: getCartFromLS().totalPrice,
+    totalItems: getCartFromLS().items.length || 0
+}
+
+export const slice = createSlice({
     name: "cart",
     initialState,
     reducers: {
@@ -61,33 +56,16 @@ export const cartSlice = createSlice({
         },
         itemDecrement(state, action: PayloadAction<IPizza>) {
             const selectedItem = findSelectedItem(state, action)
-            if (selectedItem && selectedItem.count === 1) {
-                state.items = state.items.filter(
-                    (item) => item.id !== action.payload.id
-                )
-                state.totalItems = state.totalItems - 1
+            if (selectedItem) {
+                selectedItem.count--
+                state.totalItems--
                 state.totalPrice = state.totalPrice - action.payload.price
-            } else {
-                if (selectedItem) {
-                    selectedItem.count--
-                    state.totalItems--
-                    state.totalPrice = state.totalPrice - action.payload.price
-                }
             }
         }
     }
 })
 
-export const selectCart = (state: RootState) => state.cart
-export const selectItemFromCartByProps =
-    (id: string, type: number, size: number) => (state: RootState) =>
-        state.cart.items.find(
-            (obj: IPizza) =>
-                obj.id === id && obj.type === type && obj.size === size
-        )
-
-// Action creators are generated for each case reducer function
 export const { addProduct, removeProduct, clearCart, itemDecrement } =
-    cartSlice.actions
+    slice.actions
 
-export default cartSlice.reducer
+export default slice.reducer

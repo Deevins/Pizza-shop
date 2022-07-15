@@ -1,22 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import axios from "axios"
 
-import { ITEMS_FETCH_URL } from "../../assets/constants"
+import { ITEMS_FETCH_URL } from "assets/constants"
 import { FetchStatusEnum } from "../../@types/enums/FetchStatusEnum"
 import { IPizza } from "../../@types/IPizza"
-import { RootState } from "../store"
-
-interface IPizzaSliceState {
-    items: IPizza[]
-    status: FetchStatusEnum
-}
-
-type FetchPizzaArgs = {
-    currentPage: number
-    categoryAttrs: string
-    sortAttrs: string
-    searchAttrs: string
-}
+import { FetchPizzaArgs, IPizzaSliceState } from "./types"
 
 export const fetchPizzas = createAsyncThunk<IPizza[], FetchPizzaArgs>(
     "pizza/fetchPizzaStatus",
@@ -35,7 +23,7 @@ const initialState: IPizzaSliceState = {
     status: FetchStatusEnum.PENDING
 }
 
-export const pizzaSlice = createSlice({
+export const slice = createSlice({
     name: "pizza",
     initialState,
     reducers: {
@@ -65,9 +53,7 @@ export const pizzaSlice = createSlice({
     }
 })
 
-export const selectPizzas = (state: RootState) => state.pizza
-
 // Action creators are generated for each case reducer function
-export const { setPizzas } = pizzaSlice.actions
+export const { setPizzas } = slice.actions
 
-export default pizzaSlice.reducer
+export default slice.reducer

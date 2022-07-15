@@ -1,30 +1,24 @@
-import React, { useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 import { useSelector } from "react-redux"
 import qs from "qs"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
-import { categories } from "../assets/categories"
-import { sortTypes } from "../assets/constants"
+import { categories } from "assets/categories"
 
-import Sort from "../components/Home/Sort"
-import PizzaBlock from "../components/Home/PizzaBlock"
-import Loader from "../components/Home/Loader"
-import Pagination from "../components/Home/Pagination/Pagination"
-import Categories from "../components/Home/Categories"
+import Sort from "components/Home/Sort"
+import PizzaBlock from "components/Home/PizzaBlock"
+import Loader from "components/Home/Loader"
+import Categories from "components/Home/Categories"
+import Pagination from "components/Home/Pagination"
 
 import { FetchStatusEnum } from "../@types/enums/FetchStatusEnum"
 
-import {
-    selectFilters,
-    setCategoryId,
-    setFilters
-} from "../redux/slices/filterSlice"
-import {
-    selectPagination,
-    setCurrentPage
-} from "../redux/slices/paginationSlice"
-import { fetchPizzas, selectPizzas } from "../redux/slices/pizzaSlice"
-import { useAppDispatch } from "../redux/store"
+import { fetchPizzas } from "redux/pizza/slice"
+import { useAppDispatch } from "redux/store"
+import { selectFilters } from "../redux/filter/selectors"
+import { selectPagination } from "../redux/pagination/selectors"
+import { setCategoryId } from "../redux/filter/slice"
+import { selectPizzas } from "../redux/pizza/selectors"
 
 type SearchPizzaParams = {
     sortBy: string
@@ -46,7 +40,10 @@ const Home: React.FC = () => {
 
     const dispatch = useAppDispatch()
 
-    const onClickCategory = (id: number) => dispatch(setCategoryId(id))
+    const onClickCategory = useCallback(
+        (id: number) => dispatch(setCategoryId(id)),
+        []
+    )
 
     const getPizzas = async () => {
         const sortBy = sortType.sortProperty.replace("-", "")
@@ -127,7 +124,7 @@ const Home: React.FC = () => {
                     categoryId={categoryId}
                     onClickCategory={onClickCategory}
                 />
-                <Sort />
+                <Sort sortType={sortType} />
             </div>
             <h2 className="content__title">{categories[categoryId]} пиццы</h2>
             <div className="content__items">

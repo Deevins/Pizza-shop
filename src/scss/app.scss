@@ -231,6 +231,7 @@ body {
 
                     &:hover {
                         background-color: transparent;
+                        cursor: default;
 
                         svg path {
                             fill: #787878;

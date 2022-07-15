@@ -1,10 +1,13 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { clearCart, selectCart } from "../redux/slices/cartSlice"
-import PizzaItem from "../components/Cart/PizzaItem"
-import CartEmpty from "../components/Cart/CartEmpty"
+
+import PizzaItem from "components/Cart/PizzaItem"
+import CartEmpty from "components/Cart/CartEmpty"
+
 // @ts-ignore
-import { CartTrash, LeftArrow, CartImg } from "../assets/images"
+import { CartImg, CartTrash, LeftArrow } from "../assets/images"
+import { selectCart } from "../redux/cart/selectors"
+import { clearCart } from "../redux/cart/slice"
 
 const Cart: React.FC = () => {
     const { items, totalPrice, totalItems } = useSelector(selectCart)
