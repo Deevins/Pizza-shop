@@ -20,7 +20,7 @@ const App: React.FC = () => {
             <Routes>
                 <Route path={"/"} element={<MainLayout />}>
                     <Route path={"pizza/:id"} element={<SinglePizza />} />
-                    <Route path={"/"} element={<Home />} />
+                    
                     <Route path={"/cart"} element={<Cart />} />
                     <Route path={"*"} element={<NotFound />} />
                 </Route>
