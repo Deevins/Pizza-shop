@@ -55,7 +55,7 @@ const Home: React.FC = () => {
             categoryId > 0
                 ? `&sortBy=${sortBy}&order=${order}`
                 : `sortBy=${sortBy}&order=${order}`
-
+        console.log("wtf")
         dispatch(
             fetchPizzas({
                 currentPage,
